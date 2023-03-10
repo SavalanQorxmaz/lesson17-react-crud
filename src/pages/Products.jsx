@@ -1,10 +1,10 @@
 
 
 import React, { useEffect, useState } from 'react'
-import {Data} from '../components/Data'
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import TextField from '@mui/material/TextField';
+import axios from 'axios'
 
 
 const columns = [
@@ -48,12 +48,29 @@ const columns = [
 const Products = () => {
 
   const [data, setData] = useState([]);
-  const [flag, setflag] = useState(false)
+  const [flag, setFlag] = useState(false)
+  const [searchValue, setSearchValue] = useState('')
+const searchInput = document.getElementById('search')
 
   useEffect(()=>{
-    setData(Data)
+   
+    axios.get(`https://fakestoreapi.com/products/`)
+    .then(res=>res.data)
+    .then(res =>res.filter(row =>
+      row.title.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
+      ))
+      .then(res=> setData(res))
+    
   }, [flag])
 
+ 
+
+
+  const findRow = ()=>{
+  
+      setSearchValue(searchInput.value)
+      setFlag(!flag)
+  }
 
 
 
@@ -62,9 +79,9 @@ const Products = () => {
     <div className='products'>
       <div className='container'>
       <Box sx={{  width: '100%' }}>
-      <TextField id="standard-basic" label="Axtar" variant="standard" />
+      <TextField onChange={findRow} style={{marginTop: '20px', marginBottom: '20px', width: '100%'}} id="search" label="Axtar" variant="standard" />
       <DataGrid
-        rows={Data}
+        rows={data}
         columns={columns}
         autoHeight
         initialState={{
