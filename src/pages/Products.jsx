@@ -46,24 +46,40 @@ const columns = [
 
 
 const Products = () => {
-
+  const [axiosData, setAxiosData] = useState([])
   const [data, setData] = useState([]);
+  const [begin, setBegin] = useState(false)
   const [flag, setFlag] = useState(false)
   const [searchValue, setSearchValue] = useState('')
 const searchInput = document.getElementById('search')
 
-  useEffect(()=>{
-   
-    axios.get(`https://fakestoreapi.com/products/`)
+useEffect(()=>{
+  axios.get(`https://fakestoreapi.com/products/`)
     .then(res=>res.data)
-    .then(res =>res.filter(row =>
-      row.title.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
-      ))
-      .then(res=> setData(res))
+    .then(res => {
+      setAxiosData(res)
+    setData(res)
+    setBegin(true)
+    })
+}, [])
+    
+  
+  useEffect(()=>{
+  
+  if(begin){
+   
+   
+      setData( axiosData.filter(row =>
+        row.title.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||row.category.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
+        ))
+  }
+   
+    
+ 
     
   }, [flag])
 
- 
+
 
 
   const findRow = ()=>{
@@ -87,11 +103,11 @@ const searchInput = document.getElementById('search')
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 20,
+              pageSize: 10,
             },
           },
         }}
-        pageSizeOptions={[20]}
+        pageSizeOptions={[10]}
         // checkboxSelection
         disableRowSelectionOnClick
       />
