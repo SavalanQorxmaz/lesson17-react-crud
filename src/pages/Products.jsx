@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import TextField from '@mui/material/TextField';
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 
 
 const columns = [
@@ -52,6 +53,7 @@ const Products = () => {
   const [flag, setFlag] = useState(false)
   const [searchValue, setSearchValue] = useState('')
 const searchInput = document.getElementById('search')
+const navigate = useNavigate()
 
 useEffect(()=>{
   axios.get(`https://fakestoreapi.com/products/`)
@@ -88,7 +90,10 @@ useEffect(()=>{
       setFlag(!flag)
   }
 
-
+const productDetails = (e) => {
+  navigate(`/product/${e.id}`)
+  console.log(e.id)
+}
 
 
   return (
@@ -110,6 +115,7 @@ useEffect(()=>{
         pageSizeOptions={[10]}
         // checkboxSelection
         disableRowSelectionOnClick
+        onCellDoubleClick={productDetails}
       />
     </Box>
       </div>
