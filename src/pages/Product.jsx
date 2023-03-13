@@ -1,7 +1,8 @@
 
 
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
+import { MainContext } from '../context';
 import axios from 'axios';
 import swal from 'sweetalert';
 import { styled } from '@mui/material/styles';
@@ -19,6 +20,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Favorite } from '@mui/icons-material';
 
 
 const ExpandMore = styled((props) => {
@@ -35,13 +37,15 @@ const ExpandMore = styled((props) => {
 const Product = () => {
 
   const [expanded, setExpanded] = useState(false);
-
+  let c = 0
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
   const navigate = useNavigate()
   const [product, setProduct] = useState({})
   const {id} = useParams()
+  const [colorChange, setColorChange] = useState('black')
+  const {countFavorites ,setCountFavorites, favoritesIds, setFavoritesIds} = useContext(MainContext)
   
 
 useEffect(() => {
@@ -86,6 +90,31 @@ const deleteProduct =() => {
   });
 }
 
+// add to favorites
+
+// useEffect(()=>{
+// (favoritesIds.indexOf(id)>-1)?setColorChange('red'):setColorChange('black');
+// },[])
+
+const addFavorites = ()=> {
+  if(colorChange == 'black'){
+    // setFavoritesIds(favoritesIds.push(id))
+    setColorChange('red')
+    setCountFavorites(countFavorites + 1)
+  } else if(colorChange == 'red'){
+    setColorChange('black');
+    
+    setCountFavorites(countFavorites - 1)
+    // favoritesIds.find((value, index)=>{
+    //   if(value ==id){
+    //     setFavoritesIds(favoritesIds.splice(index,1))
+    //   }
+    // })
+  }
+ 
+}
+
+
 
   return (
     <div className='product'>
@@ -118,11 +147,14 @@ const deleteProduct =() => {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="delete" size='large'>
-          <DeleteIcon onClick = {deleteProduct}/>
+        <IconButton onClick = {deleteProduct} aria-label="delete" size='large'>
+          <DeleteIcon />
         </IconButton>
-        <IconButton aria-label="share">
-          <NavigateBeforeIcon onClick={()=>navigate(`/products`)}/>
+        <IconButton onClick={()=>navigate(`/products`)} aria-label="share">
+          <NavigateBeforeIcon />
+        </IconButton>
+        <IconButton style={{color: `${colorChange}`}} onClick={addFavorites} aria-label="share">
+          <Favorite />
         </IconButton>
         <ExpandMore
           expand={expanded}
