@@ -13,7 +13,7 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Collapse from '@mui/material/Collapse';
 import Avatar from '@mui/material/Avatar';
-import IconButton, { IconButtonProps } from '@mui/material/IconButton';
+import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -45,15 +45,13 @@ const Product = () => {
   const [product, setProduct] = useState({})
   const {id} = useParams()
   const [colorChange, setColorChange] = useState('black')
-  const {countFavorites ,setCountFavorites, favoritesIds, setFavoritesIds} = useContext(MainContext)
-  
+  const {countFavorites ,setCountFavorites, idArray, setIdArray} = useContext(MainContext)
 
 useEffect(() => {
   axios.get(`https://fakestoreapi.com/products/${id}`)
     .then(res=>res.data)
   .then(item => {
     setProduct(item)
-    console.log(item)
   })
 
 },[])
@@ -91,27 +89,28 @@ const deleteProduct =() => {
 }
 
 // add to favorites
+useEffect(()=>{
+  const tempArray = [].concat((localStorage.getItem('favoritesId')).split(','))
+ console.log(tempArray)
+ tempArray.includes(`${id}`)?setColorChange('red'):setColorChange('black');
+},[])
 
-// useEffect(()=>{
-// (favoritesIds.indexOf(id)>-1)?setColorChange('red'):setColorChange('black');
-// },[])
 
 const addFavorites = ()=> {
   if(colorChange == 'black'){
-    // setFavoritesIds(favoritesIds.push(id))
+    const tempArray =[].concat((localStorage.getItem('favoritesId')).split(','),`${id}`)
+    
+    localStorage.setItem('favoritesId',tempArray)
     setColorChange('red')
     setCountFavorites(countFavorites + 1)
   } else if(colorChange == 'red'){
+    const tempArray =[].concat((localStorage.getItem('favoritesId')).split(','))
+    tempArray.splice(tempArray.indexOf(`${id}`),1)
+    localStorage.setItem('favoritesId',tempArray)
     setColorChange('black');
     
     setCountFavorites(countFavorites - 1)
-    // favoritesIds.find((value, index)=>{
-    //   if(value ==id){
-    //     setFavoritesIds(favoritesIds.splice(index,1))
-    //   }
-    // })
   }
- 
 }
 
 

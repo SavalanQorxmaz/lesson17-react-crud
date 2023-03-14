@@ -3,14 +3,14 @@
 import React, {useContext, useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
 import { MainContext } from '../context'
+import IconButton from '@mui/material/IconButton';
+import { Favorite } from '@mui/icons-material';
 
 const Header = () => {
-// const [counter, setCounter] = useState(0)
+
 
   const {countFavorites} = useContext(MainContext)
-  // useEffect(()=>{
-  //   addMethods({counter, setCounter})
-  // },[])
+ 
 
 
   return (
@@ -20,7 +20,11 @@ const Header = () => {
         <div className='navbar'>
           <span><Link to={'/'}>Home</Link></span>
           <span><Link to={'/products'}>Products</Link></span>
-          <span>{countFavorites}</span>
+          <IconButton style={{color: 'yellow',position: 'relative'}}   aria-label="share">
+          <Favorite />
+          <span style={{position: 'absolute', top: '-3px',right: '-3px', color: 'green'}}>{countFavorites}</span>
+        </IconButton>
+         
         </div>
       </div>
     </div>

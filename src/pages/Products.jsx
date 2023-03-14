@@ -92,7 +92,6 @@ useEffect(()=>{
 
 const productDetails = (e) => {
   navigate(`/product/${e.id}`)
-  console.log(e.id)
 }
 
 
